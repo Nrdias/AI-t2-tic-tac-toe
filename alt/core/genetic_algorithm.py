@@ -10,7 +10,7 @@ class GA:
         self.populacao = [Individual() for _ in range(tamanho_pop)]
         self.minimax = Minimax(mode="medio")  # Começa com modo médio
 
-    def evaluate(self, modo="medio"):
+    def evaluate(self, modo="hard"):
         """
         Avalia cada indivíduo da população fazendo ele jogar contra o Minimax
         

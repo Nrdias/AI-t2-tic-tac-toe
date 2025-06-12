@@ -1,4 +1,4 @@
-from src.genetic.genetic_algorithm import GA
+from core.genetic_algorithm import GA
 
 def train():
     ag = GA(tamanho_pop=30)
