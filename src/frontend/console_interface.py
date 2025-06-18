@@ -1,5 +1,5 @@
 import numpy as np
-from src.game_environment.tictactoe_game import TicTacToeGame
+from src.game_environment.tictactoe import TicTacToe
 from src.neural_network.mlp import MLP
 from src.minimax.minimax_player import MinimaxPlayer
 from src.config import (
@@ -88,13 +88,13 @@ class ConsoleInterface:
 
         if mode == "user_vs_minimax":
             print("\nIniciando: Você (X) vs Minimax (O - Difícil)")
-            self.game_instance = TicTacToeGame(player1="Human", player2=self.minimax_player_hard) # Usuário é X
+            self.game_instance = TicTacToe(player1="Human", player2=self.minimax_player_hard) # Usuário é X
         elif mode == "user_vs_nn":
             if self.nn_player is None:
                 print("Erro: Rede neural não treinada disponível para este modo.")
                 return
             print("\nIniciando: Rede Neural (X) vs Você (O)")
-            self.game_instance = TicTacToeGame(player1=self.nn_player, player2="Human") # Rede Neural é X
+            self.game_instance = TicTacToe(player1=self.nn_player, player2="Human") # Rede Neural é X
         else:
             print("Modo de jogo inválido.")
             return
@@ -181,7 +181,7 @@ class ConsoleInterface:
         test_minimax_opponent = MinimaxPlayer(PLAYER_O, PLAYER_X, difficulty_mode="hard")
 
         # Para o teste de acurácia, a Rede Neural sempre será o Player X
-        game_for_accuracy_test = TicTacToeGame(player1=self.nn_player, player2=test_minimax_opponent)
+        game_for_accuracy_test = TicTacToe(player1=self.nn_player, player2=test_minimax_opponent)
 
         for i in range(num_test_games):
             game_for_accuracy_test.reset_game()

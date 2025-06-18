@@ -4,7 +4,7 @@ from src.config import EMPTY_CELL, MINIMAX_MEDIUM_THRESHOLD
 
 
 class MinimaxPlayer:
-    def __init__(self, player_symbol, opponent_symbol, difficulty_mode="hard"):
+    def __init__(self, player_symbol, opponent_symbol, difficulty_mode="medium"):
         self.player_symbol = player_symbol
         self.opponent_symbol = opponent_symbol
         self.difficulty_mode = difficulty_mode
@@ -15,10 +15,6 @@ class MinimaxPlayer:
 
         if self.difficulty_mode == "medium" and rand_val > MINIMAX_MEDIUM_THRESHOLD:
             return self._get_random_move(current_board)
-        elif self.difficulty_mode == "hard":
-            pass
-        else:
-            pass
 
         best_score = -np.inf
         best_move = None

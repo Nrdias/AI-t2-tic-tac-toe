@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-from src.game_environment.tictactoe_game import TicTacToeGame
+from src.game_environment.tictactoe import TicTacToe
 from src.genetic_algorithm.chromosome import Chromosome
 from src.genetic_algorithm.operators import crossover, mutation, selection
 from src.minimax.minimax_player import MinimaxPlayer
@@ -154,7 +154,7 @@ class GeneticAlgorithm:
         minimax_opponent = MinimaxPlayer(
             PLAYER_O, PLAYER_X, difficulty_mode=minimax_difficulty
         )
-        game = TicTacToeGame(player1=nn_player, player2=minimax_opponent)
+        game = TicTacToe(player1=nn_player, player2=minimax_opponent)
 
         game_over = False
 

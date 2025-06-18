@@ -2,7 +2,7 @@ from src.game_environment.board import Board
 from src.config import PLAYER_X, PLAYER_O, EMPTY_CELL
 
 
-class TicTacToeGame:
+class TicTacToe:
     def __init__(self, player1, player2):
         self.board = Board()
         self.player1 = player1
