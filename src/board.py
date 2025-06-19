@@ -38,6 +38,10 @@ class Board:
             return False
         return self.board[move[0]][move[1]] == EMPTY_CELL
 
+    def is_draw(self):
+        """Verifica se o jogo terminou em empate."""
+        return self.current_winner is None and not self.get_valid_moves()
+
     def make_move(self, move, symbol):
         """Realiza um movimento no tabuleiro se for válido."""
         if self.is_move_valid(move):
