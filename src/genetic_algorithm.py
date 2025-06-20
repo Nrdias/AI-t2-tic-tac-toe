@@ -3,7 +3,6 @@ import time
 
 import numpy as np
 
-# Supondo que seus módulos e arquivos de configuração estejam corretos.
 from src.config import FITNESS_WEIGHTS, NN_PLAYER_SYMBOL, OPPONENT_PLAYER_SYMBOL
 from src.neural_network import NeuralNetwork
 from src.board import Board
@@ -35,34 +34,6 @@ class GeneticAlgorithm:
             pop.append(chromosome)
         return pop
 
-    # --- FUNÇÕES AUXILIARES PARA AVALIAÇÃO DE JOGADAS ---
-
-    def _is_winning_move(self, board, move, symbol):
-        """Verifica se uma jogada resulta em vitória."""
-        board.make_move(move, symbol)
-        is_winner = board.check_winner(symbol)
-        board.undo_move(move)  # Desfaz a jogada para não alterar o estado real
-        return is_winner
-
-    def _is_defensive_move(self, board, move, opponent_symbol):
-        """Verifica se a jogada impede uma vitória iminente do oponente."""
-        # Simula o que aconteceria se a IA não fizesse essa jogada.
-        # O oponente venceria na sua vez?
-        for r, c in board.get_valid_moves():
-            if (r, c) != move:
-                # Se o oponente tem uma jogada vencedora que NÃO é a que a IA está bloqueando
-                if self._is_winning_move(board, (r, c), opponent_symbol):
-                    # E a jogada da IA é exatamente nessa casa para bloquear
-                    if move == (r, c):
-                        return True
-        return False
-
-    def _is_priority_move(self, move):
-        """Verifica se a jogada é em uma posição estratégica (centro ou cantos)."""
-        center = (1, 1)
-        corners = [(0, 0), (0, 2), (2, 0), (2, 2)]
-        return move == center or move in corners
-
     def _calculate_fitness(self, chromosome, minimax_player, visualize=False):
         """
         Calcula a aptidão de um cromossomo jogando contra o Minimax,
@@ -73,7 +44,9 @@ class GeneticAlgorithm:
         board = Board()
 
         move_tags = []
-        result = "invalid"  # Resultado padrão caso o jogo termine por jogada inválida
+
+        # Resultado padrão caso o jogo termine por jogada inválida
+        result = "invalid"
 
         if visualize:
             print("\n--- Novo Jogo de Treinamento ---")
@@ -126,7 +99,6 @@ class GeneticAlgorithm:
                 time.sleep(0.3)
 
         if board.current_winner == NN_PLAYER_SYMBOL:
-            # A tag 'victory' já foi adicionada na jogada vencedora.
             result = "win"
         elif board.current_winner == OPPONENT_PLAYER_SYMBOL:
             move_tags.append("defeat")
@@ -135,7 +107,6 @@ class GeneticAlgorithm:
             move_tags.append("draw")
             result = "draw"
 
-        # 5. Cálculo Final da Aptidão
         fitness = sum(FITNESS_WEIGHTS.get(tag, 0) for tag in move_tags)
 
         if visualize:
@@ -144,6 +115,29 @@ class GeneticAlgorithm:
             time.sleep(0.5)
 
         return fitness, result
+
+    def _is_winning_move(self, board, move, symbol):
+        """Verifica se uma jogada resulta em vitória."""
+        board.make_move(move, symbol)
+        is_winner = board.check_winner(symbol)
+        board.undo_move(move)
+        return is_winner
+
+    def _is_defensive_move(self, board, move, opponent_symbol):
+        """Verifica se a jogada impede uma vitória iminente do oponente."""
+
+        for r, c in board.get_valid_moves():
+            if (r, c) != move:
+                if self._is_winning_move(board, (r, c), opponent_symbol):
+                    if move == (r, c):
+                        return True
+        return False
+
+    def _is_priority_move(self, move):
+        """Verifica se a jogada é em uma posição estratégica (centro ou cantos)."""
+        center = (1, 1)
+        corners = [(0, 0), (0, 2), (2, 0), (2, 2)]
+        return move == center or move in corners
 
     def _selection(self, pop_with_fitness):
         """Seleção por torneio para escolher os pais."""
@@ -213,7 +207,7 @@ class GeneticAlgorithm:
         )
         print(f"  └ Melhor Cromossomo (início): [{chromosome_snippet}, ...]")
 
-        next_generation = [best_chromosome] # Elitismo: mantém o melhor cromossomo
+        next_generation = [best_chromosome]  # Elitismo: mantém o melhor cromossomo
 
         while len(next_generation) < self.population_size:
             parent1, parent2 = self._selection(pop_with_fitness)

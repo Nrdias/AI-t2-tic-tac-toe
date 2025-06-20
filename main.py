@@ -15,6 +15,8 @@ from src.config import (
     NN_PLAYER_SYMBOL,
     OPPONENT_PLAYER_SYMBOL,
     WEIGHTS_FILE,
+    WEIGHTS_FILE_HARD,
+    WEIGHTS_FILE_MEDIUM,
 )
 
 
@@ -36,7 +38,9 @@ def play_user_vs_minimax():
         difficulty = "hard"
     board = Board()
     minimax_player = MinimaxPlayer(difficulty=difficulty)
-    print(f"\n--- Você vs. Minimax ({'Médio' if difficulty == 'medium' else 'Difícil'}) ---")
+    print(
+        f"\n--- Você vs. Minimax ({'Médio' if difficulty == 'medium' else 'Difícil'}) ---"
+    )
     print("Você joga como 'X'. Escolha sua jogada com linha,coluna (ex: 1,2).")
     current_player = "USER"
     while not board.is_game_over():
@@ -67,7 +71,13 @@ def play_user_vs_minimax():
         print("Fim de jogo! Empate.")
 
 
-def train_nn_vs_minimax(population_size, generations_medium, generations_hard, slow_mode=False, diff_choice=None):
+def train_nn_vs_minimax(
+    population_size,
+    generations_medium,
+    generations_hard,
+    slow_mode=False,
+    diff_choice=None,
+):
     """Modo de treinamento: Rede Neural aprende com Minimax."""
     if diff_choice is None:
         print("\nEscolha a dificuldade para treinar a rede neural:")
@@ -110,7 +120,7 @@ def train_nn_vs_minimax(population_size, generations_medium, generations_hard, s
         if best_medium is not None:
             print(f"Melhor aptidão final (Médio): {best_fitness_medium:.2f}")
             print(f"Melhor aptidão geral encontrada: {best_chromosome_overall[1]:.2f}")
-            save_weights_to_file(best_medium, filename="best_nn_weights_medium.csv")
+            save_weights_to_file(best_medium, filename=WEIGHTS_FILE_MEDIUM)
     elif diff_choice == "2":
         ag_hard = GeneticAlgorithm(
             population_size=population_size,
@@ -145,7 +155,9 @@ def train_nn_vs_minimax(population_size, generations_medium, generations_hard, s
             elitism_count=4,
         )
         minimax_trainer_medium = MinimaxPlayer(difficulty="medium")
-        print(f"\nFASE 1: Treinando com Minimax 'Médio' por {generations_medium} gerações...")
+        print(
+            f"\nFASE 1: Treinando com Minimax 'Médio' por {generations_medium} gerações..."
+        )
         best_fitness_medium = -math.inf
         best_chromosome_overall = (None, -math.inf)
         for gen in range(generations_medium):
@@ -159,7 +171,7 @@ def train_nn_vs_minimax(population_size, generations_medium, generations_hard, s
         if best_medium is not None:
             print(f"Melhor aptidão final (Médio): {best_fitness_medium:.2f}")
             print(f"Melhor aptidão geral encontrada: {best_chromosome_overall[1]:.2f}")
-            save_weights_to_file(best_medium, filename="best_nn_weights_medium.csv")
+            save_weights_to_file(best_medium, filename=WEIGHTS_FILE_MEDIUM)
         ag_hard = GeneticAlgorithm(
             population_size=population_size,
             chromosome_length=chromosome_length,
@@ -168,7 +180,9 @@ def train_nn_vs_minimax(population_size, generations_medium, generations_hard, s
             elitism_count=4,
         )
         minimax_trainer_hard = MinimaxPlayer(difficulty="hard")
-        print(f"\nFASE 2: Treinando com Minimax 'Difícil' por {generations_hard} gerações...")
+        print(
+            f"\nFASE 2: Treinando com Minimax 'Difícil' por {generations_hard} gerações..."
+        )
         best_fitness_hard = -math.inf
         best_chromosome_overall = (None, -math.inf)
         for gen in range(generations_hard):
@@ -182,7 +196,7 @@ def train_nn_vs_minimax(population_size, generations_medium, generations_hard, s
         if best_hard is not None:
             print(f"Melhor aptidão final (Difícil): {best_fitness_hard:.2f}")
             print(f"Melhor aptidão geral encontrada: {best_chromosome_overall[1]:.2f}")
-            save_weights_to_file(best_hard, filename="best_nn_weights_hard.csv")
+            save_weights_to_file(best_hard, filename=WEIGHTS_FILE_HARD)
     print("\n--- Treinamento Concluído! ---")
     return best_medium, best_hard
 
@@ -346,7 +360,9 @@ def main():
             print("2. Treinar apenas contra Minimax Difícil")
             print("3. Treinar contra ambos (Médio depois Difícil)")
             while True:
-                diff_choice = input("Informe a opção desejada (1-3) [padrão: 3]: ").strip()
+                diff_choice = input(
+                    "Informe a opção desejada (1-3) [padrão: 3]: "
+                ).strip()
                 if diff_choice == "":
                     diff_choice = "3"
                 if diff_choice in ("1", "2", "3"):
@@ -357,27 +373,35 @@ def main():
                     input(f"Tamanho da população (padrão: {DEFAULT_POP_SIZE}): ")
                     or DEFAULT_POP_SIZE
                 )
-                
+
                 # Só pede as gerações relevantes baseado na escolha
                 if diff_choice == "1":  # Apenas médio
                     gens_medium = int(
-                        input(f"Nº de gerações no modo Médio (padrão: {DEFAULT_GENS_MEDIUM}): ")
+                        input(
+                            f"Nº de gerações no modo Médio (padrão: {DEFAULT_GENS_MEDIUM}): "
+                        )
                         or DEFAULT_GENS_MEDIUM
                     )
                     gens_hard = DEFAULT_GENS_HARD
                 elif diff_choice == "2":  # Apenas difícil
                     gens_medium = DEFAULT_GENS_MEDIUM
                     gens_hard = int(
-                        input(f"Nº de gerações no modo Difícil (padrão: {DEFAULT_GENS_HARD}): ")
+                        input(
+                            f"Nº de gerações no modo Difícil (padrão: {DEFAULT_GENS_HARD}): "
+                        )
                         or DEFAULT_GENS_HARD
                     )
                 else:  # Treinar ambos
                     gens_medium = int(
-                        input(f"Nº de gerações no modo Médio (padrão: {DEFAULT_GENS_MEDIUM}): ")
+                        input(
+                            f"Nº de gerações no modo Médio (padrão: {DEFAULT_GENS_MEDIUM}): "
+                        )
                         or DEFAULT_GENS_MEDIUM
                     )
                     gens_hard = int(
-                        input(f"Nº de gerações no modo Difícil (padrão: {DEFAULT_GENS_HARD}): ")
+                        input(
+                            f"Nº de gerações no modo Difícil (padrão: {DEFAULT_GENS_HARD}): "
+                        )
                         or DEFAULT_GENS_HARD
                     )
 
@@ -391,6 +415,7 @@ def main():
                 if sys.stdin in (sys.__stdin__,):
                     try:
                         import termios
+
                         termios.tcflush(sys.stdin, termios.TCIFLUSH)
                     except Exception:
                         pass
@@ -407,7 +432,11 @@ def main():
             except ValueError:
                 print("\n[ERRO] Entrada inválida. Usando valores padrão.")
                 best_nn_weights_medium, best_nn_weights_hard = train_nn_vs_minimax(
-                    DEFAULT_POP_SIZE, DEFAULT_GENS_MEDIUM, DEFAULT_GENS_HARD, False, diff_choice
+                    DEFAULT_POP_SIZE,
+                    DEFAULT_GENS_MEDIUM,
+                    DEFAULT_GENS_HARD,
+                    False,
+                    diff_choice,
                 )
                 if best_nn_weights_medium is not None:
                     nn_medium = NeuralNetwork([9, 9, 9])
