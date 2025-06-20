@@ -215,9 +215,6 @@ class GeneticAlgorithm:
 
         next_generation = [best_chromosome] # Elitismo: mantém o melhor cromossomo
 
-        # elite = [item[0] for item in pop_with_fitness[: self.elitism_count]]
-        # next_generation.extend(elite)
-
         while len(next_generation) < self.population_size:
             parent1, parent2 = self._selection(pop_with_fitness)
             child1, child2 = self._crossover(parent1, parent2)
